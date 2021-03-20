@@ -1,0 +1,14 @@
+version: '3'
+services:
+  app:
+    image: rails_hello/app
+    container_name: rails_hello_app
+    build:
+      context: ../
+      dockerfile: ./containers/app/Dockerfile
+    command: bundle exec puma -C config/puma.rb
+    volumes:
+      - tmp:/rails_hello/tmp
+
+volumes:
+  tmp:
