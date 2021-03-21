@@ -26,3 +26,10 @@ resource "aws_security_group" "security_group" {
     Name = "${var.app_name}-sg"
   }
 }
+resource "aws_lb" "alb" {
+  name               = "rails-hello-alb"
+  load_balancer_type = "application"
+
+  security_groups = [aws_security_group.security_group.id]
+  subnets         = var.public_subnet_ids
+}
