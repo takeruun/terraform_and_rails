@@ -3,10 +3,11 @@ module "network" {
 
   app_name = var.app_name
 }
+
 module "elb" {
   source = "./elb"
 
-  app_name = var.app_name
-  vpc_id   = module.network.vpc_id
+  app_name          = var.app_name
+  vpc_id            = module.network.vpc_id
 }
 
