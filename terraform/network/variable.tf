@@ -5,6 +5,16 @@ variable "azs" {
   default = ["ap-northeast-1a", "ap-northeast-1c", "ap-northeast-1d"]
 }
 
+variable "azs_name" {
+  type    = list(string)
+  default = ["1a", "1c", "1d"]
+}
 variable "vpc_cidr" {
   default = "135.0.0.0/16"
+}
+variable "public_subnet_cidrs" {
+  default = ["135.0.0.0/24", "135.0.1.0/24", "135.0.2.0/24"]
+}
+variable "private_subnet_cidrs" {
+  default = ["135.0.10.0/24", "135.0.11.0/24", "135.0.12.0/24"]
 }
