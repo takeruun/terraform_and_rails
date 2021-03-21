@@ -33,3 +33,24 @@ resource "aws_lb" "alb" {
   security_groups = [aws_security_group.security_group.id]
   subnets         = var.public_subnet_ids
 }
+
+resource "aws_lb_listener" "main" {
+  # HTTPでのアクセスを受け付ける
+  port     = "80"
+  protocol = "HTTP"
+
+  # ALBのarnを指定します。
+  #XXX: arnはAmazon Resource Names の略で、その名の通りリソースを特定するための一意な名前(id)です。
+  load_balancer_arn = aws_lb.alb.arn
+
+  # "ok" という固定レスポンスを設定する
+  default_action {
+    type = "fixed-response"
+
+    fixed_response {
+      content_type = "text/plain"
+      status_code  = "200"
+      message_body = "ok"
+    }
+  }
+}
