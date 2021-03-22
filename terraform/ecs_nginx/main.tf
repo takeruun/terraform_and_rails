@@ -11,6 +11,7 @@ resource "aws_ecs_task_definition" "task_definition" {
   requires_compatibilities = ["FARGATE"]
 
   container_definitions = data.template_file.container_definitions.rendered
+  execution_role_arn    = module.ecs_task_execution_role.iam_role_arn
 }
 
 resource "aws_lb_target_group" "target_group" {
@@ -78,4 +79,12 @@ resource "aws_security_group_rule" "ingress_rule" {
   to_port     = 80
   protocol    = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
+}
+
+# ECSタスク実行ロールの作成
+module "ecs_task_execution_role" {
+  source     = "../iam_role"
+  name       = "ecs-task-execution"
+  identifier = "ecs-tasks.amazonaws.com"
+  policy     = data.aws_iam_policy_document.ecs_task_execution.json
 }
