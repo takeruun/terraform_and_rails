@@ -12,3 +12,12 @@ module "elb" {
   public_subnet_ids = module.network.public_subnet_ids
 }
 
+module "acm" {
+  source = "./acm"
+
+  domain = var.domain
+}
+
+module "ecs_nginx" {
+  source = "./ecs_nginx"
+}
