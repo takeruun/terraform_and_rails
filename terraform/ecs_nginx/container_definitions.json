@@ -2,6 +2,14 @@
     {
       "name": "nginx",
       "image": "nginx:1.14",
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-region": "ap-northeast-1",
+          "awslogs-stream-prefix": "nginx",
+          "awslogs-group": "/ecs/example/rails-hello-nginx"
+        }
+      },
       "portMappings": [
         {
           "containerPort": 80,
