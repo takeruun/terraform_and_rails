@@ -21,3 +21,7 @@ module "acm" {
 module "ecs_nginx" {
   source = "./ecs_nginx"
 }
+
+module "ecs_cluster" {
+  source = "./ecs_cluster"
+}
