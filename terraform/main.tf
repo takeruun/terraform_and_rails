@@ -20,6 +20,9 @@ module "acm" {
 
 module "ecs_nginx" {
   source = "./ecs_nginx"
+
+  vpc_id            = module.network.vpc_id
+  http_listener_arn = module.elb.http_listener_arn
 }
 
 module "ecs_cluster" {
