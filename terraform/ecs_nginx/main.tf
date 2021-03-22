@@ -88,3 +88,23 @@ module "ecs_task_execution_role" {
   identifier = "ecs-tasks.amazonaws.com"
   policy     = data.aws_iam_policy_document.ecs_task_execution.json
 }
+
+resource "aws_ecs_service" "ecs_service" {
+  name            = "${local.name}-service"
+  launch_type     = "FARGATE"
+  desired_count   = "1"
+  cluster         = var.cluster_name
+  task_definition = aws_ecs_task_definition.task_definition.arn
+
+  network_configuration {
+    security_groups  = [aws_security_group.ecs_security_group.id]
+    subnets          = var.public_subnet_ids
+    assign_public_ip = true
+  }
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.target_group.arn
+    container_name   = "nginx"
+    container_port   = 80
+  }
+}
