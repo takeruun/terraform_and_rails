@@ -51,3 +51,31 @@ resource "aws_cloudwatch_log_group" "for_ecs" {
   name              = "/ecs/example/${local.name}"
   retention_in_days = 180
 }
+
+resource "aws_security_group" "ecs_security_group" {
+  name        = "${local.name}-sg"
+  description = "security group of rails-hello-nginx ecs"
+
+  vpc_id = var.vpc_id
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = local.name
+  }
+}
+
+resource "aws_security_group_rule" "ingress_rule" {
+  security_group_id = aws_security_group.ecs_security_group.id
+  type              = "ingress"
+
+  from_port   = 80
+  to_port     = 80
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+}
