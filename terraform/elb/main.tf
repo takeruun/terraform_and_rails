@@ -72,3 +72,14 @@ resource "aws_lb_listener" "https" {
     }
   }
 }
+resource "aws_route53_record" "this" {
+  type    = "A"
+  name    = var.domain
+  zone_id = data.aws_route53_zone.this.id
+
+  alias {
+    name                   = aws_lb.alb.dns_name
+    zone_id                = aws_lb.alb.zone_id
+    evaluate_target_health = true
+  }
+}

@@ -11,6 +11,7 @@ module "elb" {
   vpc_id            = module.network.vpc_id
   public_subnet_ids = module.network.public_subnet_ids
   acm_id            = module.acm.acm_id
+  domain            = var.domain
 }
 
 module "acm" {

@@ -11,3 +11,5 @@ variable "ingress_ports" {
 variable "public_subnet_ids" {}
 
 variable "acm_id" {}
+
+variable "domain" {}
