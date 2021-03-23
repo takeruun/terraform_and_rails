@@ -34,7 +34,7 @@ resource "aws_lb" "alb" {
   subnets         = var.public_subnet_ids
 }
 
-resource "aws_lb_listener" "main" {
+resource "aws_lb_listener" "http" {
   # HTTPでのアクセスを受け付ける
   port     = "80"
   protocol = "HTTP"
@@ -44,6 +44,24 @@ resource "aws_lb_listener" "main" {
   load_balancer_arn = aws_lb.alb.arn
 
   # "ok" という固定レスポンスを設定する
+  default_action {
+    type = "fixed-response"
+
+    fixed_response {
+      content_type = "text/plain"
+      status_code  = "200"
+      message_body = "ok"
+    }
+  }
+}
+
+resource "aws_lb_listener" "https" {
+  port     = "443"
+  protocol = "HTTPS"
+
+  load_balancer_arn = aws_lb.alb.arn
+  certificate_arn   = var.acm_id
+
   default_action {
     type = "fixed-response"
 
