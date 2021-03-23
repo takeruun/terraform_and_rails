@@ -31,7 +31,7 @@ resource "aws_lb_target_group" "target_group" {
   }
 }
 
-resource "aws_lb_listener_rule" "rule" {
+resource "aws_lb_listener_rule" "http_rule" {
   listener_arn = var.http_listener_arn
 
   # 受け取ったトラフィックをターゲットグループへ受け渡す
@@ -41,6 +41,21 @@ resource "aws_lb_listener_rule" "rule" {
   }
 
   # ターゲットグループへ受け渡すトラフィックの条件
+  condition {
+    path_pattern {
+      values = ["*"]
+    }
+  }
+}
+
+resource "aws_lb_listener_rule" "https_rule" {
+  listener_arn = var.https_listener_arn
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.target_group.id
+  }
+
   condition {
     path_pattern {
       values = ["*"]
