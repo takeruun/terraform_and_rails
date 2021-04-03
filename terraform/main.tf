@@ -20,15 +20,15 @@ module "acm" {
   domain = var.domain
 }
 
-module "ecs_nginx" {
-  source = "./ecs_nginx"
-
-  vpc_id             = module.network.vpc_id
-  http_listener_arn  = module.elb.http_listener_arn
-  https_listener_arn = module.elb.https_listener_arn
-  cluster_name       = module.ecs_cluster.cluster_name
-  public_subnet_ids  = module.network.public_subnet_ids
-}
+#module "ecs_nginx" {
+#  source = "./ecs_nginx"
+#
+#  vpc_id             = module.network.vpc_id
+#  http_listener_arn  = module.elb.http_listener_arn
+#  https_listener_arn = module.elb.https_listener_arn
+#  cluster_name       = module.ecs_cluster.cluster_name
+#  public_subnet_ids  = module.network.public_subnet_ids
+#}
 
 module "ecs_cluster" {
   source = "./ecs_cluster"
