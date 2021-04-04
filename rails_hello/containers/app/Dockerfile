@@ -15,9 +15,6 @@ RUN apk add --no-cache build-base libxml2-dev libxslt-dev \
   mkdir -p /rails_hello/tmp/pids && \
   gem install bundler
 
-ARG RAILS_MASTER_KEY
-ENV RAILS_MASTER_KEY ${RAILS_MASTER_KEY}
-
 ADD Gemfile /rails_hello/Gemfile
 ADD Gemfile.lock /rails_hello/Gemfile.lock
 # RUN bundle config set deployment 'true' && \
