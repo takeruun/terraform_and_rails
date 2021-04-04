@@ -45,3 +45,15 @@ module "rds" {
 module "ecs_cluster" {
   source = "./ecs_cluster"
 }
+
+module "ecs_rails" {
+  source = "./ecs_rails"
+
+  app_name    = var.app_name
+  db_name     = var.db_name
+  db_username = var.db_username
+  db_password = var.db_password
+  db_host     = module.rds.db_endpoint
+  db_database = var.db_database
+  master_key  = var.master_key
+}
