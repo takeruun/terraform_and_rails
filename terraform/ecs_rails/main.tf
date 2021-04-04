@@ -25,3 +25,9 @@ resource "aws_ecs_task_definition" "task_definition" {
     name = "tmp-data"
   }
 }
+
+resource "aws_cloudwatch_log_group" "log" {
+  count = length(var.apps_name)
+  name  = "/ecs/example/${var.apps_name[count.index]}"
+}
+
