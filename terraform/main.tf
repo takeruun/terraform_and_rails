@@ -20,6 +20,14 @@ module "acm" {
   domain = var.domain
 }
 
+module "rds" {
+  source = "./rds"
+
+  app_name           = var.app_name
+  vpc_id             = module.network.vpc_id
+  alb_security_group = module.elb.alb_security_group
+}
+
 #module "ecs_nginx" {
 #  source = "./ecs_nginx"
 #
