@@ -17,12 +17,6 @@
           "containerPort": 80,
           "hostPort": 80
         }
-      ],
-      "mountPoints": [
-        {
-          "sourceVolume": "tmp-data",
-          "containerPath": "/var/www/rails_hello/tmp"
-        }
       ]
     },
     {
@@ -69,10 +63,10 @@
           "value": "true"
         }
       ],
-      "mountPoints": [
+      "portMappings": [
         {
-          "sourceVolume": "tmp-data",
-          "containerPath": "/rails_hello/tmp"
+          "containerPort": 3000,
+          "hostPort": 3000
         }
       ]
     }
