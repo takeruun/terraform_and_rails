@@ -1,5 +1,5 @@
 locals {
-  name = "rails-hello-nginx"
+  name = "rails-hello"
 }
 
 resource "aws_ecs_cluster" "ecs_cluster" {

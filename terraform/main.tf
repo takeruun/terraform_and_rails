@@ -56,4 +56,11 @@ module "ecs_rails" {
   db_host     = module.rds.db_endpoint
   db_database = var.db_database
   master_key  = var.master_key
+
+  vpc_id             = module.network.vpc_id
+  http_listener_arn  = module.elb.http_listener_arn
+  https_listener_arn = module.elb.https_listener_arn
+  alb_security_group = module.elb.alb_security_group
+  cluster_name       = module.ecs_cluster.cluster_name
+  public_subnet_ids  = module.network.public_subnet_ids
 }

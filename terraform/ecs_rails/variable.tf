@@ -16,3 +16,15 @@ variable "apps_name" {
   type    = list(string)
   default = ["nginx", "rails"]
 }
+
+variable "vpc_id" {}
+
+variable "http_listener_arn" {}
+
+variable "https_listener_arn" {}
+
+variable "alb_security_group" {}
+
+variable "cluster_name" {}
+
+variable "public_subnet_ids" {}
