@@ -94,4 +94,3 @@ resource "aws_ecs_service" "ecs_service" {
     container_port   = 80
   }
 }
-

@@ -8,7 +8,7 @@ data "template_file" "container_definitions" {
     db_host     = var.db_host
     db_username = var.db_username
     db_password = var.db_password
-    db_database = var.db_database
+    db_name     = var.db_name
 
     master_key = var.master_key
   }

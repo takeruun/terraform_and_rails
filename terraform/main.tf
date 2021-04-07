@@ -53,8 +53,7 @@ module "ecs_rails" {
   db_name     = var.db_name
   db_username = var.db_username
   db_password = var.db_password
-  db_host     = module.rds.db_endpoint
-  db_database = var.db_database
+  db_host     = module.rds.db_address
   master_key  = var.master_key
 
   vpc_id             = module.network.vpc_id

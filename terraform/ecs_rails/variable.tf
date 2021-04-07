@@ -8,8 +8,6 @@ variable "db_password" {}
 
 variable "db_host" {}
 
-variable "db_database" {}
-
 variable "master_key" {}
 
 variable "apps_name" {

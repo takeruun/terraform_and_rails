@@ -20,7 +20,7 @@
       ]
     },
     {
-      "name": "rails_hello",
+      "name": "rails",
       "image":"${account_id}.dkr.ecr.ap-northeast-1.amazonaws.com/rails_hello:latest",
       "essential": true,
       "memory": 128,
@@ -52,7 +52,7 @@
         },
         {
           "name": "RDS_DB_NAME",
-          "value": "${db_database}"
+          "value": "${db_name}"
         },
         {
           "name": "RAILS_MASTER_KEY",
