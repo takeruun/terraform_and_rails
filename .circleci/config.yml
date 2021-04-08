@@ -3,14 +3,25 @@ orbs:
   aws-ecr: circleci/aws-ecr@6.15.3
   aws-ecs: circleci/aws-ecs@2.1.0
 jobs:
-  build:
+  test:
     docker:
       - image: circleci/ruby:2.7.1-node-browsers
         environment:
           RAILS_ENV: test
-    working_directory: ~/rails_hello
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_PORT: 3306
+          MYSQL_USER: root
+          MYSQL_ROOT_PASSWORD: password
+      - image: circleci/mysql:8.0.16
+        command: mysqld --default-authentication-plugin=mysql_native_password
+        environment:
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_USER: root
+          MYSQL_ROOT_PASSWORD: password
+    working_directory: ~/terraform_and_rails/rails_hello
     steps:
-      - checkout
+      - checkout:
+          path: ~/terraform_and_rails
       - restore_cache:
           keys:
             - rails-bundle-v2-{{ checksum "Gemfile.lock" }}
@@ -33,24 +44,9 @@ jobs:
           key: rails-yarn-{{ checksum "yarn.lock" }}
           paths:
             - ~/.cache/yarn
-  test:
-    docker:
-      - image: circleci/ruby:2.7.1-node-browsers
-        environment:
-          RAILS_ENV: test
-          MYSQL_HOST: 127.0.0.1
-          MYSQL_PORT: 3306
-    working_directory: ~/rails_hello
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - rails-bundle-v2-{{ checksum "Gemfile.lock" }}
-            - rails-bundle-v2-
-      - restore_cache:
-          keys:
-            - rails-yarn-{{ checksum "yarn.lock" }}
-            - rails-yarn-
+      - run:
+          name: Wait for DB
+          command: dockerize -wait tcp://127.0.0.1:3306 -timeout 3m
       - run: mv ./config/database.yml.ci ./config/database.yml
       - run:
           name: db create
@@ -58,7 +54,6 @@ jobs:
 
 workflows:
   version: 2.1
-    set_up-and-test:
-      jobs:
-        - build
-        - test
+  test:
+    jobs:
+      - test

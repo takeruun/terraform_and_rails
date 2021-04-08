@@ -1,0 +1,8 @@
+test:
+  adapter: mysql2
+  encoding: utf8
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: <%= ENV['MYSQL_USER']%>
+  password: <%= ENV['MYSQL_ROOT_PASSWORD']%> 
+  host: <%= ENV['MYSQL_HOST']%>  
+  database: rails_hello_test
