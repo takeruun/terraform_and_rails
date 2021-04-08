@@ -2,6 +2,7 @@ version: 2.1
 orbs:
   aws-ecr: circleci/aws-ecr@6.15.3
   aws-ecs: circleci/aws-ecs@2.1.0
+  aws-cli: circleci/aws-cli@2.0.0
 jobs:
   test:
     docker:
@@ -57,3 +58,25 @@ workflows:
   test:
     jobs:
       - test
+      - aws-ecr/build-and-push-image:
+          requires:
+            - test
+          aws-access-key-id: ACCESS_KEY_ID
+          aws-secret-access-key: SECRET_ACCESS_KEY
+          path: ./rails_hello/
+          dockerfile: containers/app/Dockerfile
+          account-url: AWS_ECR_ACCOUNT_URL
+          repo: '${AWS_RESOURCE_RAILS}'
+          region: AWS_DEFAULT_REGION
+          tag: latest
+          extra-build-args: '--build-arg RAILS_MASTER_KEY=${RAILS_MASTER_KEY}'
+      - aws-ecs/deploy-service-update:
+          requires:
+            - aws-ecr/build-and-push-image
+          aws-region: AWS_DEFAULT_REGION
+          aws-access-key-id: ACCESS_KEY_ID
+          aws-secret-access-key: SECRET_ACCESS_KEY
+          family: 'rails_hello'
+          cluster-name: 'rails-hello'
+          service-name: 'rails_hello-service'
+          container-image-name-updates: 'container=rails,tag=latest'
