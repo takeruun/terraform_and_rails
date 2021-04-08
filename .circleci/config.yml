@@ -2,7 +2,6 @@ version: 2.1
 orbs:
   aws-ecr: circleci/aws-ecr@6.15.3
   aws-ecs: circleci/aws-ecs@2.1.0
-  aws-cli: circleci/aws-cli@2.0.0
 jobs:
   test:
     docker:
@@ -46,6 +45,12 @@ jobs:
           paths:
             - ~/.cache/yarn
       - run:
+          name: webpacker install
+          command: rails webpacker:install
+      - run:
+          name: aseet compile
+          command: bundle exec rails assets:precompile
+      - run:
           name: Wait for DB
           command: dockerize -wait tcp://127.0.0.1:3306 -timeout 3m
       - run: mv ./config/database.yml.ci ./config/database.yml
@@ -53,52 +58,25 @@ jobs:
           name: db create
           command: bundle exec rake db:create
 
-  build-and-push:
-    docker:
-      - image: circleci/ruby:2.7.1-node-browsers
-    working_directory: ~/terraform_and_rails/rails_hello
-    steps:
-      - checkout:
-          path: ~/terraform_and_rails
-      - aws-cli/setup:
-          aws-access-key-id: AWS_ACCESS_KEY_ID
-          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          aws-region: AWS_DEFAULT_REGION
-      - restore_cache:
-          keys:
-            - rails-bundle-v2-{{ checksum "Gemfile.lock" }}
-            - rails-bundle-v2-
-      - run:
-          name: bundle install
-          command: bundle check --path vendor/bundle || bundle install --deployment
-      - save_cache:
-          key: rails-bundle-v2-{{ checksum "Gemfile.lock" }}
-          paths:
-            - vendor/bundle
-      - run:
-          name: Login ECR
-          command: aws ecr get-login-password --region $AWS_DEFAULT_REGION --profile default | docker login --username AWS --password-stdin $AWS_ECR_ACCOUNT_URL
-      - run:
-          name: assets precompile
-          command: bundle exec rails assets:precompile
-      - run:
-          name: Build Docker image
-          command: docker build -t ${AWS_ECR_ACCOUNT_URL}/${AWS_RESOURCE_RAILS}:latest containers/app/Dockerfile .
-      - run:
-          name: Push Image
-          command: docker push ${AWS_ECR_ACCOUNT_URL}/${AWS_RESOURCE_RAILS}:latest
 workflows:
   version: 2.1
   test:
     jobs:
       - test
-      - build-and-push:
+      - aws-ecr/build-and-push-image:
           requires:
             - test
+          aws-access-key-id: ACCESS_KEY_ID
+          aws-secret-access-key: SECRET_ACCESS_KEY
+          path: ./rails_hello/
+          dockerfile: containers/app/Dockerfile
+          account-url: AWS_ECR_ACCOUNT_URL
+          repo: '${AWS_RESOURCE_RAILS}'
+          region: AWS_DEFAULT_REGION
+          tag: latest
       - aws-ecs/deploy-service-update:
           requires:
-            - test
-            - build-and-push
+            - aws-ecr/build-and-push-image
           aws-region: AWS_DEFAULT_REGION
           aws-access-key-id: ACCESS_KEY_ID
           aws-secret-access-key: SECRET_ACCESS_KEY
