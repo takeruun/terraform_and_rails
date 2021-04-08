@@ -9,7 +9,7 @@ ENV RAILS_MASTER_KEY ${RAILS_MASTER_KEY}
 
 RUN apk add --no-cache build-base libxml2-dev libxslt-dev \
   tzdata ca-certificates mysql-dev mysql-client \
-  imagemagick imagemagick-dev imagemagick-c++ nodejs yarn && \
+  imagemagick imagemagick-dev imagemagick-c++ && \
   gem install bundler
 
 WORKDIR /rails_hello
@@ -21,9 +21,6 @@ ADD Gemfile.lock /rails_hello/Gemfile.lock
 # RUN bundle config set deployment 'true' && \
 RUN bundle config set without 'test development' && \
   bundle install
-
-RUN yarn install
-RUN bundle exec rails assets:precompile
 
 ADD . /rails_hello
 

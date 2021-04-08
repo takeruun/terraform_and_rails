@@ -2,6 +2,7 @@ version: 2.1
 orbs:
   aws-ecr: circleci/aws-ecr@6.15.3
   aws-ecs: circleci/aws-ecs@2.1.0
+  aws-cli: circleci/aws-cli@2.0.0
 jobs:
   test:
     docker:
@@ -52,26 +53,48 @@ jobs:
           name: db create
           command: bundle exec rake db:create
 
+  build-and-push:
+    docker:
+      - image: circleci/python
+    working_directory: ~/terraform_and_rails/rails_hello
+    steps:
+      - aws-cli/setup:
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          aws-region: AWS_DEFAULT_REGION
+      - restore_cache:
+          keys:
+            - rails-bundle-v2-{{ checksum "Gemfile.lock" }}
+            - rails-bundle-v2-
+      - run:
+          name: bundle install
+          command: bundle check --path vendor/bundle || bundle install --deployment
+      - save_cache:
+          key: rails-bundle-v2-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+      - run:
+          name: Login ECR
+          command: aws ecr get-login-password | docker login --username AWS --password-stdin https://${AWS_ECR_ACCOUNT_URL}
+      - run:
+          name: assets precompile
+          command: bundle exec rails assets:precompile
+      - run:
+          name: Build Docker image
+          command: docker build -t ${AWS_ECR_ACCOUNT_URL}/${AWS_RESOURCE_RAILS}:latest containers/app/Dockerfile .
+      - run:
+          name: Push Image
+          command: docker push ${AWS_ECR_ACCOUNT_URL}/${AWS_RESOURCE_RAILS}:latest
 workflows:
   version: 2.1
   test:
     jobs:
       - test
-      - aws-ecr/build-and-push-image:
-          requires:
-            - test
-          aws-access-key-id: ACCESS_KEY_ID
-          aws-secret-access-key: SECRET_ACCESS_KEY
-          path: ./rails_hello/
-          dockerfile: containers/app/Dockerfile
-          account-url: AWS_ECR_ACCOUNT_URL
-          repo: '${AWS_RESOURCE_RAILS}'
-          region: AWS_DEFAULT_REGION
-          tag: latest
-          extra-build-args: '--build-arg RAILS_MASTER_KEY=${RAILS_MASTER_KEY}'
+      - build-and-push
       - aws-ecs/deploy-service-update:
           requires:
-            - aws-ecr/build-and-push-image
+            - test
+            - build-and-push
           aws-region: AWS_DEFAULT_REGION
           aws-access-key-id: ACCESS_KEY_ID
           aws-secret-access-key: SECRET_ACCESS_KEY
