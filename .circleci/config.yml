@@ -46,7 +46,7 @@ jobs:
             - ~/.cache/yarn
       - run:
           name: webpacker install
-          command: rails webpacker:install
+          command: bundle exec rails webpacker:install
       - run:
           name: aseet compile
           command: bundle exec rails assets:precompile
