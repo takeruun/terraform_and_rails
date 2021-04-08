@@ -63,15 +63,17 @@ workflows:
           aws-access-key-id: ACCESS_KEY_ID
           aws-secret-access-key: SECRET_ACCESS_KEY
           path: ./rails_hello/
-          dockerfile: Dockerfile.prod
+          dockerfile: containers/app/Dockerfile
           account-url: AWS_ECR_ACCOUNT_URL
           repo: '${AWS_RESOURCE_RAILS}'
           region: AWS_DEFAULT_REGION
-          tag: ${CIRCLE_SHA1}
+          tag: latest
       - aws-ecs/deploy-service-update:
           requires:
             - aws-ecr/build-and-push-image
           aws-region: AWS_DEFAULT_REGION
+          aws-access-key-id: ACCESS_KEY_ID
+          aws-secret-access-key: SECRET_ACCESS_KEY
           family: 'rails_hello'
           cluster-name: 'rails-hello'
           service-name: 'rails_hello-service'
