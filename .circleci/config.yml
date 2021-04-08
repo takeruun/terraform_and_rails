@@ -58,6 +58,8 @@ jobs:
       - image: circleci/python
     working_directory: ~/terraform_and_rails/rails_hello
     steps:
+      - checkout:
+          path: ~/terraform_and_rails
       - aws-cli/setup:
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
@@ -90,7 +92,9 @@ workflows:
   test:
     jobs:
       - test
-      - build-and-push
+      - build-and-push:
+          requires:
+            - test
       - aws-ecs/deploy-service-update:
           requires:
             - test
