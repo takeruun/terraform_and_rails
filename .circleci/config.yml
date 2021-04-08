@@ -22,9 +22,6 @@ jobs:
     steps:
       - checkout:
           path: ~/terraform_and_rails
-      - run:
-          name: aseet compile
-          command: bundle exec rails assets:precompile
       - restore_cache:
           keys:
             - rails-bundle-v2-{{ checksum "Gemfile.lock" }}
@@ -47,6 +44,9 @@ jobs:
           key: rails-yarn-{{ checksum "yarn.lock" }}
           paths:
             - ~/.cache/yarn
+      - run:
+          name: aseet compile
+          command: bundle exec rails assets:precompile
       - run:
           name: Wait for DB
           command: dockerize -wait tcp://127.0.0.1:3306 -timeout 3m
