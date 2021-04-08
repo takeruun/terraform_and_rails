@@ -77,7 +77,7 @@ jobs:
             - vendor/bundle
       - run:
           name: Login ECR
-          command: aws ecr get-login-password | docker login --username AWS --password-stdin https://${AWS_ACCOUNT_ID}.dkr.ecr.ap-northeast-1.amazonaws.com
+          command: aws ecr get-login-password --region $AWS_DEFAULT_REGION --profile default | docker login --username AWS --password-stdin $AWS_ECR_ACCOUNT_URL
       - run:
           name: assets precompile
           command: bundle exec rails assets:precompile
