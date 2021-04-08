@@ -40,6 +40,14 @@ jobs:
           RAILS_ENV: test
           MYSQL_HOST: 127.0.0.1
           MYSQL_PORT: 3306
+          MYSQL_USER: root
+          MYSQL_ROOT_PASSWORD: password
+      - image: circleci/mysql:8.0.16
+        command: mysqld --default-authentication-plugin=mysql_native_password
+        environment:
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_USER: root
+          MYSQL_ROOT_PASSWORD: password
     working_directory: ~/rails_hello
     steps:
       - checkout
@@ -51,6 +59,9 @@ jobs:
           keys:
             - rails-yarn-{{ checksum "yarn.lock" }}
             - rails-yarn-
+      - run:
+          name: Wait for DB
+          command: dockerize -wait tcp://127.0.0.1:3306 -timeout 3m
       - run: mv ./config/database.yml.ci ./config/database.yml
       - run:
           name: db create
