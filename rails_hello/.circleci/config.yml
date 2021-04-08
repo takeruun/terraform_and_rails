@@ -1,0 +1,64 @@
+version: 2.1
+orbs:
+  aws-ecr: circleci/aws-ecr@6.15.3
+  aws-ecs: circleci/aws-ecs@2.1.0
+jobs:
+  build:
+    docker:
+      - image: circleci/ruby:2.7.1-node-browsers
+        environment:
+          RAILS_ENV: test
+    working_directory: ~/rails_hello
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - rails-bundle-v2-{{ checksum "Gemfile.lock" }}
+            - rails-bundle-v2-
+      - run:
+          name: bundle install
+          command: bundle check --path vendor/bundle || bundle install --deployment
+      - save_cache:
+          key: rails-bundle-v2-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+      - restore_cache:
+          keys:
+            - rails-yarn-{{ checksum "yarn.lock" }}
+            - rails-yarn-
+      - run:
+          name: yarn install
+          command: yarn install --cache-folder ~/.cache/yarn
+      - save_cache:
+          key: rails-yarn-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
+  test:
+    docker:
+      - image: circleci/ruby:2.7.1-node-browsers
+        environment:
+          RAILS_ENV: test
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_PORT: 3306
+    working_directory: ~/rails_hello
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - rails-bundle-v2-{{ checksum "Gemfile.lock" }}
+            - rails-bundle-v2-
+      - restore_cache:
+          keys:
+            - rails-yarn-{{ checksum "yarn.lock" }}
+            - rails-yarn-
+      - run: mv ./config/database.yml.ci ./config/database.yml
+      - run:
+          name: db create
+          command: bundle exec rake db:create
+
+workflows:
+  version: 2.1
+    set_up-and-test:
+      jobs:
+        - build
+        - test
