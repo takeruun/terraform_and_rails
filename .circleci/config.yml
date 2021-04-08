@@ -62,7 +62,7 @@ workflows:
             - test
           aws-access-key-id: ACCESS_KEY_ID
           aws-secret-access-key: SECRET_ACCESS_KEY
-          path: ~/terraform_and_rails/rails_hello/
+          path: ./rails_hello/
           dockerfile: Dockerfile.prod
           account-url: AWS_ECR_ACCOUNT_URL
           repo: '${AWS_RESOURCE_RAILS}'
