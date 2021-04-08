@@ -69,7 +69,7 @@ jobs:
 
 workflows:
   version: 2.1
-    set_up-and-test:
-      jobs:
-        - build
-        - test
+  set_up-and-test:
+    jobs:
+      - build
+      - test
