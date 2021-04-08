@@ -62,14 +62,14 @@ workflows:
             - test
           path: ~/terraform_and_rails/rails_hello/
           dockerfile: /containers/app/Dockerfile
-          account-url: '${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com'
-          repo: ${AWS_RESOURCE_RAILS}
-          region: ${AWS_DEFAULT_REGION}
+          account-url: AWS_ECR_ACCOUNT_URL
+          repo: '${AWS_RESOURCE_RAILS}'
+          region: AWS_DEFAULT_REGION
           tag: ${CIRCLE_SHA1}
       - aws-ecs/deploy-service-update:
           requires:
             - aws-ecr/build-and-push-image
-          aws-region: ${AWS_DEFAULT_REGION}
+          aws-region: AWS_DEFAULT_REGION
           family: 'rails_hello'
           cluster-name: 'rails-hello'
           service-name: 'rails_hello-service'
