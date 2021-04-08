@@ -24,4 +24,4 @@ RUN bundle config set without 'test development' && \
 
 ADD . /rails_hello
 
-ENTRYPOINT ["rails", "assets:precompile"]
+RUN bundle exec rails assets:precompile
