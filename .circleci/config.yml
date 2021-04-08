@@ -54,6 +54,7 @@ jobs:
 
   build-and-push:
     docker:
+      - image: circleci/python
       - image: circleci/ruby:2.7.1-node-browsers
     working_directory: ~/terraform_and_rails/rails_hello
     steps:
