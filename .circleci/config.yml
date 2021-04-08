@@ -77,4 +77,4 @@ workflows:
           family: 'rails_hello'
           cluster-name: 'rails-hello'
           service-name: 'rails_hello-service'
-          container-image-name-updates: 'container=rails,tag=${CIRCLE_SHA1}'
+          container-image-name-updates: 'container=rails,tag=latest'
