@@ -8,7 +8,7 @@ jobs:
       - image: circleci/ruby:2.7.1-node-browsers
         environment:
           RAILS_ENV: test
-    working_directory: ~/rails_hello
+    working_directory: ~/terraform_and_rails/rails_hello
     steps:
       - checkout
       - restore_cache:
@@ -48,7 +48,7 @@ jobs:
           MYSQL_HOST: 127.0.0.1
           MYSQL_USER: root
           MYSQL_ROOT_PASSWORD: password
-    working_directory: ~/rails_hello
+    working_directory: ~/terraform_and_rails/rails_hello
     steps:
       - checkout
       - restore_cache:
