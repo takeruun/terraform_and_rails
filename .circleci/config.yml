@@ -45,9 +45,6 @@ jobs:
           paths:
             - ~/.cache/yarn
       - run:
-          name: aseet compile
-          command: bundle exec rails assets:precompile
-      - run:
           name: Wait for DB
           command: dockerize -wait tcp://127.0.0.1:3306 -timeout 3m
       - run: mv ./config/database.yml.ci ./config/database.yml
@@ -71,6 +68,7 @@ workflows:
           repo: '${AWS_RESOURCE_RAILS}'
           region: AWS_DEFAULT_REGION
           tag: latest
+          extra-build-args: '--build-arg RAILS_MASTER_KEY=${RAILS_MASTER_KEY}'
       - aws-ecs/deploy-service-update:
           requires:
             - aws-ecr/build-and-push-image
