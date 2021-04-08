@@ -24,4 +24,4 @@ RUN bundle config set without 'test development' && \
 
 ADD . /rails_hello
 
-CMD bundle exec puma -C config/puma.rb
+ENTRYPOINT ["rails", "assets:precompile"]
