@@ -10,8 +10,8 @@ jobs:
           RAILS_ENV: test
     working_directory: ~/terraform_and_rails/rails_hello
     steps:
-      - checkout
-        path: ~/terraform_and_rails
+      - checkout:
+          path: ~/terraform_and_rails
       - run: ls -la
       - restore_cache:
           keys:
