@@ -4,7 +4,7 @@ RSpec.describe "Homes", type: :system do
   describe 'GET /index' do
     it '「hello」'do
       get '/'
-      expect(page).have_content 'HELLO'
+      expect(page).to have_content 'HELLO'
     end
   end
 end
